@@ -1,9 +1,11 @@
+require 'apivore/extended_schema'
+
 module Apivore
   class SwaggerChecker
     PATH_TO_CHECKER_MAP = {}
 
-    def self.instance_for(path)
-      PATH_TO_CHECKER_MAP[path] ||= new(path)
+    def self.instance_for(path, base_path: nil)
+      PATH_TO_CHECKER_MAP[path] ||= new(path, base_path: base_path)
     end
 
     def has_path?(path)
@@ -46,20 +48,21 @@ module Apivore
     end
 
     def base_path
-      @swagger.base_path
+      @base_path || @swagger.base_path
     end
 
     def response=(response)
       @response = response
     end
 
-    attr_reader :response, :swagger, :swagger_path, :untested_mappings
+    attr_reader :response, :swagger, :openapi, :swagger_path, :untested_mappings
 
     private
 
     attr_reader :mappings
 
-    def initialize(swagger_path)
+    def initialize(swagger_path, base_path: nil)
+      @base_path = base_path
       @swagger_path = swagger_path
       load_swagger_doc!
       validate_swagger!

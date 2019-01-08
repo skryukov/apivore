@@ -10,6 +10,8 @@ module Apivore
       case version
       when '2.0'
         schema = File.read(File.expand_path("../../../data/swagger_2.0_schema.json", __FILE__))
+      when /^3\.0.*/
+        schema = File.read(File.expand_path("../../../data/openapi_3.0_schema.json", __FILE__))
       else
         raise "Unknown/unsupported Swagger version to validate against: #{version}"
       end
@@ -17,7 +19,7 @@ module Apivore
     end
 
     def version
-      swagger
+      swagger || openapi
     end
 
     def base_path
@@ -38,6 +40,8 @@ module Apivore
             schema_location = nil
             if response_data.schema
               schema_location = Fragment.new ['#', 'paths', path, verb, 'responses', response_code, 'schema']
+            elsif response_data.content && response_data.content['application/json']&.schema
+              schema_location = Fragment.new ['#', 'paths', path, verb, 'responses', response_code, 'content', 'application/json', 'schema']
             end
             block.call(path, verb, response_code, schema_location)
           end

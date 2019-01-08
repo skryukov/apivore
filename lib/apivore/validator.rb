@@ -80,10 +80,6 @@ module Apivore
           " a documented response code of #{expected_response_code} at path"\
           " #{method} #{path}. "\
           "\n             Available response codes: #{swagger_checker.response_codes_for_path(path, method)}"
-      elsif method == "get" && swagger_checker.fragment(path, method, expected_response_code).nil?
-        errors << "Swagger doc: #{swagger_checker.swagger_path} missing"\
-          " response model for get request with #{path} for code"\
-          " #{expected_response_code}"
       end
     end
 
