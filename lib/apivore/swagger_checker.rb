@@ -74,6 +74,8 @@ module Apivore
     end
 
     def fetch_swagger!
+      return JSON.parse(File.read(swagger_path)) if swagger_path[0] == '.'
+
       session = ActionDispatch::Integration::Session.new(Rails.application)
       begin
         session.get(swagger_path)
