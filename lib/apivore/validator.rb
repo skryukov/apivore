@@ -11,7 +11,7 @@ module Apivore
     def initialize(method, path, expected_response_code, params = {})
       @method = method.to_s
       @path = path.to_s
-      @params = params
+      @params = params.with_indifferent_access
       @expected_response_code = expected_response_code.to_i
     end
 
